@@ -309,8 +309,6 @@ describe("Antigravity quota-aware routing", () => {
     expect(getAntigravityQuotaCache().get("ag-optimistic")?.[MODEL]?.remainingPercentage).toBe(90);
   });
 
-});
-
   it("checks shared family summary quota (claude_gpt_session / weekly)", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-08-26T00:00:00.000Z"));
@@ -357,6 +355,10 @@ describe("Antigravity quota-aware routing", () => {
         remainingPercentage: 0,
         resetAt: FUTURE_RESET,
       });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 
   it("does not strike-break on generic content-triggered 429s", async () => {
     vi.useFakeTimers();
@@ -376,11 +378,9 @@ describe("Antigravity quota-aware routing", () => {
 
       expect(third).toBeNull();
       expect(getAntigravityQuotaCache().get("ag-content-429")?.[MODEL]?.remainingPercentage).toBe(90);
- 96b25690 (fix: avoid breaker on content-triggered 429s)
     } finally {
       vi.useRealTimers();
     }
   });
 
 });
- 96b25690 (fix: avoid breaker on content-triggered 429s)
